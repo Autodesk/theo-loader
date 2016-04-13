@@ -52,7 +52,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should error on an invalid Design Properties file', done => {
+    it('should error on an invalid Design Tokens file', done => {
         // The file may be valid JSON...
         const fixtureFileName = './invalid-design-props/props.json';
         const json = JSON.parse(loadFixture(fixtureFileName));
@@ -63,7 +63,7 @@ describe('[theo-loader]', () => {
             entry: fixtureAbsPath('./invalid-design-props/entry.js'),
         };
         webpack(config, () => {
-            // ...but it's not a valid design properties file
+            // ...but it's not a valid design tokens file
             (() => {
                 require(OUTPUT_PATH);
             }).should.throw(/Cannot find module/);

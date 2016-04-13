@@ -1,7 +1,7 @@
 {
   "name": "theo-loader",
-  "version": "0.1.1",
-  "description": "A webpack loader that transforms Design Properties files using Salesforce's theo",
+  "version": "0.1.2",
+  "description": "A webpack loader that transforms Design Tokens files using Salesforce's theo",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "scripts": {

@@ -62,7 +62,7 @@ module.exports = function theoLoader(content) {
         return options;
     };
 
-    // Recursively add dependencies on imported Design Properties files
+    // Recursively add dependencies on imported Design Tokens files
     const addImportDependencies = (jsonString, filePath) => {
         const imports = JSON.parse(jsonString).imports;
 
@@ -109,7 +109,7 @@ module.exports = function theoLoader(content) {
     this.cacheable();
     const callback = this.async();
 
-    // Add a dependency on each of the imported Design Properties files, recursively
+    // Add a dependency on each of the imported Design Tokens files, recursively
     try {
         addImportDependencies(content, this.resourcePath);
     } catch (e) {
