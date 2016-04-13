@@ -1,6 +1,6 @@
 {
   "name": "theo-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A webpack loader that transforms Design Properties files using Salesforce's theo",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shotgunsoftware/theo-loader.git"
+    "url": "git+https://github.com/Autodesk/theo-loader.git"
   },
   "keywords": [
     "theo",
@@ -22,9 +22,9 @@
   ],
   "author": "Beau Roberts <beau.roberts@autodesk.com>",
   "bugs": {
-    "url": "https://github.com/shotgunsoftware/theo-loader/issues"
+    "url": "https://github.com/Autodesk/theo-loader/issues"
   },
-  "homepage": "https://github.com/shotgunsoftware/theo-loader#readme",
+  "homepage": "https://github.com/Autodesk/theo-loader#readme",
   "peerDependencies": {
     "theo": "^4.2.0",
     "webpack": "^1.12.13"
