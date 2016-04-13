@@ -1,6 +1,6 @@
 # theo loader for webpack
 
-A webpack loader that transforms Design Properties files using [Salesforce's theo](https://github.com/salesforce-ux/theo).
+A webpack loader that transforms Design Tokens files using [Salesforce's theo](https://github.com/salesforce-ux/theo).
 
 ## Installation
 
