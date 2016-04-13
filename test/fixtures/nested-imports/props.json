@@ -1,0 +1,17 @@
+{
+  "imports": [
+    "./import.json"
+  ],
+  "props": {
+    "one": {
+      "value": "rgb(0, 0, 0)",
+      "type": "color",
+      "category": "background"
+    },
+    "two": {
+      "value": "rgb(255, 255, 255)",
+      "type": "color",
+      "category": "background"
+    }
+  }
+}

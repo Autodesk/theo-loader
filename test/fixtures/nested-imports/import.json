@@ -1,0 +1,20 @@
+{
+  "imports": [
+    "./nested-import.json"
+  ],
+  "aliases": {
+    "BIG_NUMBER": "123456789"
+  },
+  "props": {
+    "three": {
+      "value": "20rem",
+      "type": "number",
+      "category": "foo"
+    },
+    "four": {
+      "value": "{!BIG_NUMBER}",
+      "type": "number",
+      "category": "bar"
+    }
+  }
+}
