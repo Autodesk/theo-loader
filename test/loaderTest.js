@@ -231,4 +231,16 @@ describe('[theo-loader]', () => {
             done();
         });
     });
+
+    it('should play nice with upstream loaders', done => {
+        const config = {
+            ...webpackConfigBase,
+            entry: fixtureAbsPath('./non-json-import/entry.js'),
+        };
+        webpack(config, () => {
+            const result = require(OUTPUT_PATH).default;
+            result.should.have.property('five');
+            done();
+        });
+    });
 });

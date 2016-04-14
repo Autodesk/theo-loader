@@ -22,12 +22,16 @@ import vinylSource from 'vinyl-source-stream';
 import vinylBuffer from 'vinyl-buffer';
 
 module.exports = function theoLoader(content) {
+    const replaceExtension = (filePath, newExt) => filePath.replace(/\.[^\.]+$/, newExt);
+
     // Create a vinyl stream from some file content and a path.
     //
     // Method taken from:
     // https://github.com/gulpjs/gulp/blob/master/docs/recipes/make-stream-from-buffer.md
     const bufferToStream = (buffer, filePath) => {
-        const stream = vinylSource(filePath);
+        // Ensure that the file extension is .json or theo won't parse it!
+        const jsonFilePath = replaceExtension(filePath, '.json');
+        const stream = vinylSource(jsonFilePath);
 
         // Write the raw content to the stream
         stream.write(buffer);
@@ -109,9 +113,18 @@ module.exports = function theoLoader(content) {
     this.cacheable();
     const callback = this.async();
 
+    let jsonContent;
+    try {
+        // Assume the content is a serialized module
+        jsonContent = JSON.stringify(this.exec(content, this.resourcePath));
+    } catch (e) {
+        // Fall back to assuming its serialized JSON
+        jsonContent = content;
+    }
+
     // Add a dependency on each of the imported Design Tokens files, recursively
     try {
-        addImportDependencies(content, this.resourcePath);
+        addImportDependencies(jsonContent, this.resourcePath);
     } catch (e) {
         process.nextTick(() => {
             callback(e);
@@ -119,7 +132,7 @@ module.exports = function theoLoader(content) {
         return;
     }
 
-    const stream = bufferToStream(content, this.resourcePath);
+    const stream = bufferToStream(jsonContent, this.resourcePath);
     const options = getOptions(transform, format);
 
     stream
