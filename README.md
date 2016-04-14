@@ -2,6 +2,9 @@
 
 A webpack loader that transforms Design Tokens files using [Salesforce's theo](https://github.com/salesforce-ux/theo).
 
+[![Build Status](https://img.shields.io/travis/Autodesk/theo-loader/master.svg)](https://travis-ci.org/Autodesk/theo-loader)
+[![NPM Version](https://img.shields.io/npm/v/theo-loader.svg)](https://www.npmjs.com/package/theo-loader)
+
 ## Installation
 
 ```bash
