@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+/* eslint-disable global-require */
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';

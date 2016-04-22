@@ -2,7 +2,8 @@
   "parser": "babel-eslint",
   "extends" : "airbnb",
   "rules" : {
-      "indent": [2,4],
-      "max-len": [2, 120, 4]
+      "indent": [2, 4],
+      "max-len": [2, 120, 4],
+      "import/no-unresolved": 0
   }
 }
