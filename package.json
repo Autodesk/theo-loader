@@ -5,8 +5,9 @@
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --compilers js:test/babel-register",
-    "lint": "eslint '**/*.js'",
+    "test:js": "mocha --compilers js:test/babel-register",
+    "lint:js": "eslint '**/*.js'",
+    "test": "npm run test:js && npm run lint:js",
     "prepublish": "babel src --out-dir dist"
   },
   "repository": {
@@ -39,6 +40,7 @@
     "bluebird": "^3.3.4",
     "eslint": "^3.2.2",
     "eslint-config-airbnb": "^10.0.0",
+    "eslint-import-resolver-webpack": "^0.4.0",
     "eslint-plugin-import": "^1.12.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^6.0.0",
