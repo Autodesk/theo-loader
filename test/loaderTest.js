@@ -79,7 +79,7 @@ describe('[theo-loader]', () => {
                 entry: fixtureAbsPath('./no-imports/entry.js'),
             };
             webpack(config, (err, stats) => {
-                should(err).be.empty();
+                should.not.exist(err);
                 stats.compilation.missingDependencies.should.be.empty();
                 stats.compilation.fileDependencies.should.containDeep([
                     fixtureAbsPath('./no-imports/props.json'),
@@ -94,7 +94,7 @@ describe('[theo-loader]', () => {
                 entry: fixtureAbsPath('./non-nested-imports/entry.js'),
             };
             webpack(config, (err, stats) => {
-                should(err).be.empty();
+                should.not.exist(err);
                 stats.compilation.missingDependencies.should.be.empty();
                 stats.compilation.fileDependencies.should.containDeep([
                     fixtureAbsPath('./non-nested-imports/props.json'),
@@ -110,7 +110,7 @@ describe('[theo-loader]', () => {
                 entry: fixtureAbsPath('./nested-imports/entry.js'),
             };
             webpack(config, (err, stats) => {
-                should(err).be.empty();
+                should.not.exist(err);
                 stats.compilation.missingDependencies.should.be.empty();
                 stats.compilation.fileDependencies.should.containDeep([
                     fixtureAbsPath('./nested-imports/props.json'),
