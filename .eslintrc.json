@@ -3,7 +3,9 @@
   "extends" : "airbnb",
   "rules" : {
       "indent": [2, 4],
-      "max-len": [2, 120, 4],
-      "import/no-unresolved": 0
+      "max-len": [2, 120, 4]
+  },
+  "settings": {
+    "import/resolver": "webpack"
   }
 }
