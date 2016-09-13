@@ -33,12 +33,12 @@ const fixtureAbsPath = relPath => path.resolve(FIXTURE_PATH, relPath);
 const loadFixture = relPath => fs.readFileSync(fixtureAbsPath(relPath)).toString();
 
 describe('[theo-loader]', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
         delete require.cache[OUTPUT_PATH];
         rimraf(OUTPUT_PATH, done);
     });
 
-    it('should error on an invalid json file', done => {
+    it('should error on an invalid json file', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./invalid-json/entry.js'),
@@ -51,7 +51,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should error on an invalid Design Tokens file', done => {
+    it('should error on an invalid Design Tokens file', (done) => {
         // The file may be valid JSON...
         const fixtureFileName = './invalid-design-props/props.json';
         const json = JSON.parse(loadFixture(fixtureFileName));
@@ -70,8 +70,8 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should recursively add dependencies', done => {
-        const promise1 = new Promise(resolve => {
+    it('should recursively add dependencies', (done) => {
+        const promise1 = new Promise((resolve) => {
             const config = {
                 ...webpackConfigBase,
                 entry: fixtureAbsPath('./no-imports/entry.js'),
@@ -86,7 +86,7 @@ describe('[theo-loader]', () => {
             });
         });
 
-        const promise2 = new Promise(resolve => {
+        const promise2 = new Promise((resolve) => {
             const config = {
                 ...webpackConfigBase,
                 entry: fixtureAbsPath('./non-nested-imports/entry.js'),
@@ -102,7 +102,7 @@ describe('[theo-loader]', () => {
             });
         });
 
-        const promise3 = new Promise(resolve => {
+        const promise3 = new Promise((resolve) => {
             const config = {
                 ...webpackConfigBase,
                 entry: fixtureAbsPath('./nested-imports/entry.js'),
@@ -125,7 +125,7 @@ describe('[theo-loader]', () => {
             });
     });
 
-    it('should generate an importable javascript module', done => {
+    it('should generate an importable javascript module', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry.js'),
@@ -140,7 +140,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should use transform: "web", format: "json" by default', done => {
+    it('should use transform: "web", format: "json" by default', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry.js'),
@@ -152,7 +152,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should be able to specify transform, format in the query parameters', done => {
+    it('should be able to specify transform, format in the query parameters', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry-scss.js'),
@@ -164,7 +164,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should successfully import "common.js" format', done => {
+    it('should successfully import "common.js" format', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry-commonjs.js'),
@@ -176,7 +176,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should successfully import "amd.js" format', done => {
+    it('should successfully import "amd.js" format', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry-amdjs.js'),
@@ -187,7 +187,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should successfully import "scss" format', done => {
+    it('should successfully import "scss" format', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry-scss.js'),
@@ -202,7 +202,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should accept format and transform options', done => {
+    it('should accept format and transform options', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry.js'),
@@ -215,7 +215,7 @@ describe('[theo-loader]', () => {
                             // Only return props with the type of 'color'
                             propsFilter: prop => prop.type === 'color',
                             // Prefix each prop name with 'PREFIX_'
-                            propsMap: prop => {
+                            propsMap: (prop) => {
                                 prop.name = `PREFIX_${prop.name}`; // eslint-disable-line no-param-reassign
                                 return prop;
                             },
@@ -231,7 +231,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should play nice with upstream loaders', done => {
+    it('should play nice with upstream loaders', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./non-json-import/entry.js'),
