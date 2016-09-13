@@ -52,7 +52,7 @@ module.exports = function theoLoader(content) {
         };
         if (this.options.theo && this.options.theo.outputFormats) {
             // Find an output format spec that has the same transform and format
-            this.options.theo.outputFormats.some(outputFormat => {
+            this.options.theo.outputFormats.some((outputFormat) => {
                 if (outputFormat.transform === transform && outputFormat.format === format) {
                     options = {
                         transform: outputFormat.transformOptions || {},
@@ -74,7 +74,7 @@ module.exports = function theoLoader(content) {
             return;
         }
 
-        imports.forEach(importPath => {
+        imports.forEach((importPath) => {
             const importPathAbs = path.resolve(path.dirname(filePath), importPath);
             this.addDependency(importPathAbs);
 
@@ -141,7 +141,7 @@ module.exports = function theoLoader(content) {
         .on('error', callback)
         .pipe(theo.plugins.format(format, options.format))
         .on('error', callback)
-        .pipe(theo.plugins.getResult(result => {
+        .pipe(theo.plugins.getResult((result) => {
             // Convert the result into a JS module
             callback(null, moduleize(result, format));
         }));
