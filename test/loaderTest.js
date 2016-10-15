@@ -1,3 +1,4 @@
+/* eslint-disable import/no-dynamic-require */
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';
