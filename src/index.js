@@ -22,7 +22,7 @@ import vinylSource from 'vinyl-source-stream';
 import vinylBuffer from 'vinyl-buffer';
 
 module.exports = function theoLoader(content) {
-    const replaceExtension = (filePath, newExt) => filePath.replace(/\.[^\.]+$/, newExt);
+    const replaceExtension = (filePath, newExt) => filePath.replace(/\.[^.]+$/, newExt);
 
     // Create a vinyl stream from some file content and a path.
     //
