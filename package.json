@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "babel-cli": "6.18.0",
-    "babel-core": "^6.7.6",
+    "babel-core": "^6.18.2",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.7",
     "babel-plugin-transform-object-rest-spread": "^6.6.5",
