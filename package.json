@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/Autodesk/theo-loader#readme",
   "peerDependencies": {
-    "theo": "^4.2.0",
+    "theo": "^5.0.0",
     "webpack": "^1.12.13"
   },
   "devDependencies": {
