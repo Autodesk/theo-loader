@@ -54,7 +54,7 @@
     "webpack": "^1.12.15"
   },
   "dependencies": {
-    "loader-utils": "^0.2.12",
+    "loader-utils": "^1.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
