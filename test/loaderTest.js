@@ -66,7 +66,7 @@ describe('[theo-loader]', () => {
             // ...but it's not a valid design tokens file
             (() => {
                 require(OUTPUT_PATH);
-            }).should.throw(/prop "one" contained no "type" key/);
+            }).should.throw(/Property "one" contained no "category" key/);
             done();
         });
     });
@@ -174,17 +174,6 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should successfully import "amd.js" format', (done) => {
-        const config = {
-            ...webpackConfigBase,
-            entry: fixtureAbsPath('./nested-imports/entry-amdjs.js'),
-        };
-        webpack(config, () => {
-            require(OUTPUT_PATH).default.should.be.ok();
-            done();
-        });
-    });
-
     it('should successfully import "scss" format', (done) => {
         const config = {
             ...webpackConfigBase,
@@ -213,15 +202,12 @@ describe('[theo-loader]', () => {
                             outputFormats: [
                                 {
                                     transform: 'web',
-                                    format: 'json',
+                                    format: 'common.js',
                                     formatOptions: {
                                         // Only return props with the type of 'color'
-                                        propsFilter: prop => prop.type === 'color',
+                                        propsFilter: prop => prop.get('type') === 'color',
                                         // Prefix each prop name with 'PREFIX_'
-                                        propsMap: (prop) => {
-                                            prop.name = `PREFIX_${prop.name}`; // eslint-disable-line no-param-reassign
-                                            return prop;
-                                        },
+                                        propsMap: prop => prop.update('name', name => `PREFIX_${name}`),
                                     },
                                 },
                             ],
@@ -231,8 +217,8 @@ describe('[theo-loader]', () => {
             ],
         };
         webpack(config, () => {
-            const json = require(OUTPUT_PATH).default;
-            json.PREFIX_five.should.equal('rgb(255, 0, 0)');
+            const js = require(OUTPUT_PATH).default;
+            js.prefixFive.should.equal('rgb(255, 0, 0)');
             done();
         });
     });
