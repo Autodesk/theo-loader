@@ -18,46 +18,20 @@ import theo from 'theo';
 import loaderUtils from 'loader-utils';
 import path from 'path';
 import fs from 'fs';
-import vinylSource from 'vinyl-source-stream';
-import vinylBuffer from 'vinyl-buffer';
 
 module.exports = function theoLoader(content) {
-    const replaceExtension = (filePath, newExt) => filePath.replace(/\.[^.]+$/, newExt);
-
-    // Create a vinyl stream from some file content and a path.
-    //
-    // Method taken from:
-    // https://github.com/gulpjs/gulp/blob/master/docs/recipes/make-stream-from-buffer.md
-    const bufferToStream = (buffer, filePath) => {
-        // Ensure that the file extension is .json or theo won't parse it!
-        const jsonFilePath = replaceExtension(filePath, '.json');
-        const stream = vinylSource(jsonFilePath);
-
-        // Write the raw content to the stream
-        stream.write(buffer);
-
-        // Close the stream on the next process loop
-        process.nextTick(() => {
-            stream.end();
-        });
-
-        return stream;
-    };
-
     // Return any options to pass to the theo transform and format plugins for the given transform/format pair.
     const getOptions = (transform, format) => {
-        let options = {
-            transform: {},
-            format: {},
+        const options = {
+            transformOptions: {},
+            formatOptions: {},
         };
         if (this.options.theo && this.options.theo.outputFormats) {
             // Find an output format spec that has the same transform and format
             this.options.theo.outputFormats.some((outputFormat) => {
                 if (outputFormat.transform === transform && outputFormat.format === format) {
-                    options = {
-                        transform: outputFormat.transformOptions || {},
-                        format: outputFormat.formatOptions || {},
-                    };
+                    options.transformOptions = outputFormat.transformOptions || {};
+                    options.formatOptions = outputFormat.formatOptions || {};
                     return true;
                 }
                 return false;
@@ -106,7 +80,7 @@ module.exports = function theoLoader(content) {
     // Parse the transform and format from the query in the request
     const query = this.query && loaderUtils.parseQuery(this.query);
     const transform = (query && query.transform) || 'web';
-    const format = (query && query.format) || 'json';
+    const format = (query && query.format) || 'common.js';
 
     this.cacheable();
     const callback = this.async();
@@ -130,19 +104,25 @@ module.exports = function theoLoader(content) {
         return;
     }
 
-    const stream = bufferToStream(jsonContent, this.resourcePath);
-    const options = getOptions(transform, format);
+    const { transformOptions, formatOptions } = getOptions(transform, format);
 
-    stream
-        .pipe(vinylBuffer())
-        .pipe(theo.plugins.transform(transform, options.transform))
-        .on('error', callback)
-        .pipe(theo.plugins.format(format, options.format))
-        .on('error', callback)
-        .pipe(
-            theo.plugins.getResult((result) => {
-                // Convert the result into a JS module
-                callback(null, moduleize(result, format));
-            }),
-        );
+    theo
+        .convert({
+            transform: {
+                ...transformOptions,
+                // theo will choke if file path does not end with ".json"
+                file: this.resourcePath.replace(/\.[^.]+$/, '.json'),
+                data: jsonContent,
+                type: transform,
+            },
+            format: {
+                ...formatOptions,
+                type: format,
+            },
+        })
+        .then((result) => {
+            // Convert the result into a JS module
+            callback(null, moduleize(result, format));
+        })
+        .catch(callback);
 };

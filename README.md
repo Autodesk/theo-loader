@@ -42,7 +42,7 @@ __Note:__ [npm](https://npmjs.com) deprecated
 ```
 
 ``` javascript
-var props = require("theo!./props.json");
+import designTokens from 'theo-loader!./props.json'
 // => {
 //  COLOR_BACKGROUND: "rgb(244, 246, 249)",
 //  COLOR_BACKGROUND_ALT: "rgb(255, 255, 255)"
@@ -56,7 +56,7 @@ var props = require("theo!./props.json");
 The loader uses the `web` transform and `json` format by default. You can specify another transform or format in the query parameters:
 
 ```javascript
-var props = require("theo?transform=web&format=scss!./props.json");
+import designTokens from 'theo-loader?transform=web&format=scss!./props.json';
 // => "$color-background: rgb(244, 246, 249);\n$color-background-alt: rgb(255, 255, 255);"
 ```
 
@@ -83,10 +83,7 @@ module.exports = {
               transform: 'web',
               format: 'scss',
               formatOptions: {
-                propsMap: function (prop) {
-                  prop.name = 'PREFIX_' + prop.name;
-                  return prop;
-                }
+                propsMap: prop => prop.update('name', name => `PREFIX_${name}`)
               }
             }
           ]
@@ -106,23 +103,20 @@ Each entry in the `outputFormats` array can contain the following keys and value
 
 When loading a particular file, theo-loader will use the `formatOptions` and `transformOptions` from the `outputFormats` entry that matches the current `transform` and `format`. If there are multiple entries in the outputFormat array that have the same `transform` and `format`, only the first will be used.
 
-See the [theo documentation](https://github.com/salesforce-ux/theo) for more information about the available options for the `transform` and `format` plugins.
+See the [theo documentation](https://github.com/salesforce-ux/theo) for more information about the available transforms and formatters.
 
 ## theo Initialization
 
 You can perform any initialization for theo, like registering custom transforms or formatters using `registerTransform`, `registerValueTransform` or `registerFormat`, outside of theo-loader. In `webpack.config.js`, for example:
 
 ```javascript
-var theo = require('theo');
+import theo from 'theo';
 
 // Do any theo initialization here
-theo.registerValueTransform('animation/web/curve',
-  function (prop) {
-    return prop.type === 'animation-curve'
-  },
-  function (prop) {
-    return 'cubic-bezier(' + prop.value.join(', ') + ')';
-  }
+theo.registerValueTransform(
+  'animation/web/curve',
+  prop => prop.get('type') === 'animation-curve',
+  prop => 'cubic-bezier(' + prop.get('value').join(', ') + ')'
 );
 
 module.exports = {
@@ -136,9 +130,15 @@ module.exports = {
     ]
   },
 
-  theo: {
-    // Configure theo-loader here
-    ...
+  plugins: {
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        theo: {
+          // Configure theo-loader here
+          ...
+        }
+      }
+    })
   }
 }
 ```
