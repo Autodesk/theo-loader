@@ -66,28 +66,34 @@ You can specify options to pass to the `transform` and `format` plugins in `webp
 module.exports = {
   ...
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.json$/,
-        loaders: ["theo"]
+        loader: "theo-loader"
       }
     ]
   },
 
-  theo: {
-    outputFormats: [
-      {
-        transform: 'web',
-        format: 'scss',
-        formatOptions: {
-          propsMap: function (prop) {
-            prop.name = 'PREFIX_' + prop.name;
-            return prop;
-          }
+  plugins: [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        theo: {
+          outputFormats: [
+            {
+              transform: 'web',
+              format: 'scss',
+              formatOptions: {
+                propsMap: function (prop) {
+                  prop.name = 'PREFIX_' + prop.name;
+                  return prop;
+                }
+              }
+            }
+          ]
         }
       }
-    ]
-  }
+    })
+  ]
 };
 ```
 
@@ -122,10 +128,10 @@ theo.registerValueTransform('animation/web/curve',
 module.exports = {
   ...
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.json$/,
-        loaders: ["theo"]
+        loader: "theo-loader"
       }
     ]
   },

@@ -20,11 +20,11 @@ const webpackConfigBase = {
         libraryTarget: 'commonjs2',
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel',
+                loader: 'babel-loader',
             },
         ],
     },
@@ -47,7 +47,7 @@ describe('[theo-loader]', () => {
         webpack(config, () => {
             (() => {
                 require(OUTPUT_PATH);
-            }).should.throw(/Cannot find module/);
+            }).should.throw(/SyntaxError: Unexpected token/);
             done();
         });
     });
@@ -66,7 +66,7 @@ describe('[theo-loader]', () => {
             // ...but it's not a valid design tokens file
             (() => {
                 require(OUTPUT_PATH);
-            }).should.throw(/Cannot find module/);
+            }).should.throw(/prop "one" contained no "type" key/);
             done();
         });
     });
@@ -80,9 +80,7 @@ describe('[theo-loader]', () => {
             webpack(config, (err, stats) => {
                 should.not.exist(err);
                 stats.compilation.missingDependencies.should.be.empty();
-                stats.compilation.fileDependencies.should.containDeep([
-                    fixtureAbsPath('./no-imports/props.json'),
-                ]);
+                stats.compilation.fileDependencies.should.containDeep([fixtureAbsPath('./no-imports/props.json')]);
                 resolve();
             });
         });
@@ -120,10 +118,9 @@ describe('[theo-loader]', () => {
             });
         });
 
-        Promise.all([promise1, promise2, promise3])
-            .then(() => {
-                done();
-            });
+        Promise.all([promise1, promise2, promise3]).then(() => {
+            done();
+        });
     });
 
     it('should generate an importable javascript module', (done) => {
@@ -195,9 +192,11 @@ describe('[theo-loader]', () => {
         };
         webpack(config, () => {
             const sassContent = require(OUTPUT_PATH).default;
-            const css = sass.renderSync({
-                data: `${sassContent}a { background-color: $two; }`,
-            }).css.toString();
+            const css = sass
+                .renderSync({
+                    data: `${sassContent}a { background-color: $two; }`,
+                })
+                .css.toString();
             css.should.match(/^a\s+{\s+background-color: white;\s+}\s+$/);
             done();
         });
@@ -207,23 +206,29 @@ describe('[theo-loader]', () => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry.js'),
-            theo: {
-                outputFormats: [
-                    {
-                        transform: 'web',
-                        format: 'json',
-                        formatOptions: {
-                            // Only return props with the type of 'color'
-                            propsFilter: prop => prop.type === 'color',
-                            // Prefix each prop name with 'PREFIX_'
-                            propsMap: (prop) => {
-                                prop.name = `PREFIX_${prop.name}`; // eslint-disable-line no-param-reassign
-                                return prop;
-                            },
+            plugins: [
+                new webpack.LoaderOptionsPlugin({
+                    options: {
+                        theo: {
+                            outputFormats: [
+                                {
+                                    transform: 'web',
+                                    format: 'json',
+                                    formatOptions: {
+                                        // Only return props with the type of 'color'
+                                        propsFilter: prop => prop.type === 'color',
+                                        // Prefix each prop name with 'PREFIX_'
+                                        propsMap: (prop) => {
+                                            prop.name = `PREFIX_${prop.name}`; // eslint-disable-line no-param-reassign
+                                            return prop;
+                                        },
+                                    },
+                                },
+                            ],
                         },
                     },
-                ],
-            },
+                }),
+            ],
         };
         webpack(config, () => {
             const json = require(OUTPUT_PATH).default;

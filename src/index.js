@@ -95,9 +95,7 @@ module.exports = function theoLoader(content) {
                 moduleContent = theoOutput;
             } else {
                 // Export everything else as a string
-                const escaped = theoOutput
-                    .replace(/\n/g, '\\n')
-                    .replace(/"/g, '\\"');
+                const escaped = theoOutput.replace(/\n/g, '\\n').replace(/"/g, '\\"');
                 moduleContent = `"${escaped}"`;
             }
             moduleized = `module.exports = ${moduleContent};`;
@@ -106,9 +104,9 @@ module.exports = function theoLoader(content) {
     };
 
     // Parse the transform and format from the query in the request
-    const query = loaderUtils.parseQuery(this.query);
-    const transform = query.transform || 'web';
-    const format = query.format || 'json';
+    const query = this.query && loaderUtils.parseQuery(this.query);
+    const transform = (query && query.transform) || 'web';
+    const format = (query && query.format) || 'json';
 
     this.cacheable();
     const callback = this.async();
@@ -141,8 +139,10 @@ module.exports = function theoLoader(content) {
         .on('error', callback)
         .pipe(theo.plugins.format(format, options.format))
         .on('error', callback)
-        .pipe(theo.plugins.getResult((result) => {
-            // Convert the result into a JS module
-            callback(null, moduleize(result, format));
-        }));
+        .pipe(
+            theo.plugins.getResult((result) => {
+                // Convert the result into a JS module
+                callback(null, moduleize(result, format));
+            }),
+        );
 };
