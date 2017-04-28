@@ -16,6 +16,7 @@ Support for previous versions has been dropped. For information on the changes i
 
 **Additional Notes**:
 
+- Node.js v6 or above is required
 - Theo no longer has a `json` format, so the default format for theo-loader has been changed to `common.js` which behaves similarly.
 
 ## [1.0.0]
