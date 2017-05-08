@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/Autodesk/theo-loader#readme",
   "peerDependencies": {
-    "theo": "^6.0.0 || ^6.0.0-alpha",
+    "theo": "^6.0.0 || ^6.0.0-alpha.5",
     "webpack": "^2.4.1"
   },
   "devDependencies": {
@@ -50,12 +50,11 @@
     "node-sass": "^4.3.0",
     "rimraf": "^2.5.2",
     "should": "^11.0.0",
-    "theo": "^4.3.0",
+    "theo": "^6.0.0 || ^6.0.0-alpha.5",
     "webpack": "^2.4.1"
   },
   "dependencies": {
     "loader-utils": "^1.1.0",
-    "theo": "^6.0.0-alpha.5"
   },
   "engines": {
     "node": ">=6"
