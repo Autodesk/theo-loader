@@ -53,15 +53,23 @@ import designTokens from 'theo-loader!./props.json'
 
 ## Formats and Transforms
 
-The loader uses the `web` transform and `json` format by default. You can specify another transform or format in the query parameters:
+The loader uses the `web` transform and `common.js` format by default. You can specify another transform or format in the query parameters:
+
+```javascript
+import designTokens from 'theo-loader?{"transform":{"type":"web"},"format":{"type":"scss"}!./props.json';
+// => "$color-background: rgb(244, 246, 249);\n$color-background-alt: rgb(255, 255, 255);"
+```
+
+or you can use the shorthand:
 
 ```javascript
 import designTokens from 'theo-loader?transform=web&format=scss!./props.json';
 // => "$color-background: rgb(244, 246, 249);\n$color-background-alt: rgb(255, 255, 255);"
 ```
 
-You can specify options to pass to the `transform` and `format` plugins in `webpack.config.js`:
+You can specify other options to pass to theo via the `LoaderOptionsPlugin` in your webpack configuration:
 
+`webpack.config.js`
 ```javascript
 module.exports = {
   ...
@@ -78,15 +86,36 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       options: {
         theo: {
-          outputFormats: [
-            {
-              transform: 'web',
-              format: 'scss',
-              formatOptions: {
-                propsMap: prop => prop.update('name', name => `PREFIX_${name}`)
-              }
+          // These options will be passed to Theo in all instances of theo-loader
+          transform: {
+            type: 'web'
+          },
+
+          // `getOptions` will be called per invocation
+          // `prevOptions` will be a merged object of the options specified
+          // above, as well as any passed to the loader via query string
+          getOptions: (prevOptions) => {
+            // prevOptions will be a
+            let newOptions = prevOptions;
+
+            // Add the propsMap
+            const formatOptions = (prevOptions && prevOptions.format) || {};
+            const formatType = format.type;
+
+            if (formatType === 'scss') {
+              newOptions = {
+                ...prevOptions,
+                format: {
+                  ...formatOptions,
+                  // SCSS variables will be named by applying 'PREFIX_' to the
+                  // front of the token name
+                  propsMap: prop => prop.update('name', name => `PREFIX_${name}`)
+                },
+              };
             }
-          ]
+
+            return newOptions;
+          }
         }
       }
     })
@@ -94,20 +123,11 @@ module.exports = {
 };
 ```
 
-Each entry in the `outputFormats` array can contain the following keys and values:
-
-- `transform`: A valid theo transform
-- `format`: A valid theo format
-- `transformOptions`: An options object that will be passed to the theo transform plugin
-- `formatOptions`: An options object that will be passed to the theo format plugin
-
-When loading a particular file, theo-loader will use the `formatOptions` and `transformOptions` from the `outputFormats` entry that matches the current `transform` and `format`. If there are multiple entries in the outputFormat array that have the same `transform` and `format`, only the first will be used.
-
-See the [theo documentation](https://github.com/salesforce-ux/theo) for more information about the available transforms and formatters.
+See the [theo documentation](https://github.com/salesforce-ux/theo) for more information about the Theo options format.
 
 ## theo Initialization
 
-You can perform any initialization for theo, like registering custom transforms or formatters using `registerTransform`, `registerValueTransform` or `registerFormat`, outside of theo-loader. In `webpack.config.js`, for example:
+You can perform any initialization for theo, like registering custom transforms or formatters using `registerTransform`, `registerValueTransform` or `registerFormat`, in your webpack configuration:
 
 ```javascript
 import theo from 'theo';
