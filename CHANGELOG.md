@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0]
+
+The following changes and additions were made to configuring theo-loader:
+
+- Theo options can now be passed as JSON via query string, e.g. `theo-loader?{“transform”:{“type”:”web”},”format”:{“type”:”sass”}}!./tokens.json`
+- The options format passed to the webpack `LoaderOptionsPlugin` has changed: Theo options are specified as they would be to the`theo.convert` function. These options apply to all instances of theo-loader.
+- For options that vary on a per-transform, per-format or per-invocation basis, the new `getOptions` function option should be used. `getOptions` receives an initial options object that is the merged contents of the constant options supplied to the LoaderOptionsPlugin and any options supplied via query string. The final options object should be returned.
+
+### :bangbang: Breaking changes with 2.x
+
+- The previous configuration format is no longer supported
+
 ## [2.0.0]
 
 - Updated minimum `theo` peerDependency package version to `6.0.0-beta`. ([#87](https://github.com/Autodesk/theo-loader/issues/87))
