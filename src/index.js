@@ -19,24 +19,34 @@ import loaderUtils from 'loader-utils';
 import path from 'path';
 import fs from 'fs';
 
+const DEFAULT_TRANSFORM = 'web';
+const DEFAULT_FORMAT = 'common.js';
+
 module.exports = function theoLoader(content) {
     // Return any options to pass to the theo transform and format plugins for the given transform/format pair.
-    const getOptions = (transform, format) => {
-        const options = {
-            transformOptions: {},
-            formatOptions: {},
+    const mergeOptions = (loaderOptions, queryOptions) => {
+        const { getOptions, ...otherLoaderOptions } = loaderOptions;
+        let options = {
+            ...otherLoaderOptions,
+            ...(queryOptions || {}),
         };
-        if (this.options.theo && this.options.theo.outputFormats) {
-            // Find an output format spec that has the same transform and format
-            this.options.theo.outputFormats.some((outputFormat) => {
-                if (outputFormat.transform === transform && outputFormat.format === format) {
-                    options.transformOptions = outputFormat.transformOptions || {};
-                    options.formatOptions = outputFormat.formatOptions || {};
-                    return true;
-                }
-                return false;
-            });
+
+        if (typeof options.transform === 'string') {
+            options.transform = {
+                type: options.transform,
+            };
         }
+
+        if (typeof options.format === 'string') {
+            options.format = {
+                type: options.format,
+            };
+        }
+
+        if (typeof getOptions === 'function') {
+            options = getOptions(options);
+        }
+
         return options;
     };
 
@@ -57,15 +67,15 @@ module.exports = function theoLoader(content) {
         });
     };
 
-    // Return the output of the theo format plugin as a Javascript module definition.
-    const moduleize = (theoOutput, format) => {
+    // Return the output of theo as a Javascript module definition.
+    const moduleize = (theoOutput, formatType) => {
         let moduleized;
-        if (/js$/.test(format)) {
+        if (/js$/.test(formatType)) {
             // These are already javascripts modules, either CommonJS or AMD
             moduleized = theoOutput;
         } else {
             let moduleContent;
-            if (/json$/.test(format)) {
+            if (/json$/.test(formatType)) {
                 moduleContent = theoOutput;
             } else {
                 // Export everything else as a string
@@ -76,11 +86,6 @@ module.exports = function theoLoader(content) {
         }
         return moduleized;
     };
-
-    // Parse the transform and format from the query in the request
-    const query = this.query && loaderUtils.parseQuery(this.query);
-    const transform = (query && query.transform) || 'web';
-    const format = (query && query.format) || 'common.js';
 
     this.cacheable();
     const callback = this.async();
@@ -104,25 +109,30 @@ module.exports = function theoLoader(content) {
         return;
     }
 
-    const { transformOptions, formatOptions } = getOptions(transform, format);
+    // Parse the transform and format from the query in the request
+    const query = this.query && loaderUtils.parseQuery(this.query);
+    const { format, transform, ...otherMergedOptions } = mergeOptions(this.options.theo || {}, query);
+    const transformType = (transform && transform.type) || DEFAULT_TRANSFORM;
+    const formatType = (format && format.type) || DEFAULT_FORMAT;
 
     theo
         .convert({
+            ...otherMergedOptions,
             transform: {
-                ...transformOptions,
+                ...(transform || {}),
                 // theo will choke if file path does not end with ".json"
                 file: this.resourcePath.replace(/\.[^.]+$/, '.json'),
                 data: jsonContent,
-                type: transform,
+                type: transformType,
             },
             format: {
-                ...formatOptions,
-                type: format,
+                ...(format || {}),
+                type: formatType,
             },
         })
         .then((result) => {
             // Convert the result into a JS module
-            callback(null, moduleize(result, format));
+            callback(null, moduleize(result, formatType));
         })
         .catch(callback);
 };

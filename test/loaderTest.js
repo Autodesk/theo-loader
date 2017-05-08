@@ -138,7 +138,7 @@ describe('[theo-loader]', () => {
         });
     });
 
-    it('should use transform: "web", format: "json" by default', (done) => {
+    it('should use transform: "web", format: "common.js" by default', (done) => {
         const config = {
             ...webpackConfigBase,
             entry: fixtureAbsPath('./nested-imports/entry.js'),
@@ -199,18 +199,14 @@ describe('[theo-loader]', () => {
                 new webpack.LoaderOptionsPlugin({
                     options: {
                         theo: {
-                            outputFormats: [
-                                {
-                                    transform: 'web',
-                                    format: 'common.js',
-                                    formatOptions: {
-                                        // Only return props with the type of 'color'
-                                        propsFilter: prop => prop.get('type') === 'color',
-                                        // Prefix each prop name with 'PREFIX_'
-                                        propsMap: prop => prop.update('name', name => `PREFIX_${name}`),
-                                    },
-                                },
-                            ],
+                            transform: 'web',
+                            format: {
+                                type: 'common.js',
+                                // Only return props with the type of 'color'
+                                propsFilter: prop => prop.get('type') === 'color',
+                                // Prefix each prop name with 'PREFIX_'
+                                propsMap: prop => prop.update('name', name => `PREFIX_${name}`),
+                            },
                         },
                     },
                 }),
@@ -219,6 +215,40 @@ describe('[theo-loader]', () => {
         webpack(config, () => {
             const js = require(OUTPUT_PATH).default;
             js.prefixFive.should.equal('rgb(255, 0, 0)');
+            done();
+        });
+    });
+
+    it('should be able to modify options based on those passed via query', (done) => {
+        const config = {
+            ...webpackConfigBase,
+            entry: fixtureAbsPath('./non-nested-imports/entry-query-options.js'),
+            plugins: [
+                new webpack.LoaderOptionsPlugin({
+                    options: {
+                        theo: {
+                            transform: 'web',
+                            getOptions: (options) => {
+                                options.format.type.should.eql('raw.json');
+                                options.propToDelete.should.eql('three');
+
+                                return {
+                                    ...options,
+                                    transform: {
+                                        ...(options.transform || {}),
+                                        preprocess: def => def.deleteIn(['props', options.propToDelete]),
+                                    },
+                                };
+                            },
+                        },
+                    },
+                }),
+            ],
+        };
+        webpack(config, () => {
+            const js = require(OUTPUT_PATH).default;
+            js.props.should.have.properties(['four', 'five']);
+            js.props.should.not.have.property('three');
             done();
         });
     });
