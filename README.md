@@ -95,10 +95,8 @@ module.exports = {
           // `prevOptions` will be a merged object of the options specified
           // above, as well as any passed to the loader via query string
           getOptions: (prevOptions) => {
-            // prevOptions will be a
             let newOptions = prevOptions;
 
-            // Add the propsMap
             const formatOptions = (prevOptions && prevOptions.format) || {};
             const formatType = format.type;
 
