@@ -91,7 +91,7 @@ module.exports = {
             type: 'web'
           },
 
-          // `getOptions` will be called per invocation
+          // `getOptions` will be called per import
           // `prevOptions` will be a merged object of the options specified
           // above, as well as any passed to the loader via query string
           getOptions: (prevOptions) => {
