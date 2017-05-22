@@ -1,5 +1,7 @@
 # theo loader for webpack
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Autodesk/theo-loader.svg)](https://greenkeeper.io/)
+
 A webpack loader that transforms Design Tokens files using [Salesforce's theo](https://github.com/salesforce-ux/theo).
 
 [![Build Status](https://img.shields.io/travis/Autodesk/theo-loader/master.svg)](https://travis-ci.org/Autodesk/theo-loader)
