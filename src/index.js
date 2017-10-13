@@ -52,7 +52,7 @@ module.exports = function theoLoader(content) {
 
     // Recursively add dependencies on imported Design Tokens files
     const addImportDependencies = (jsonString, filePath) => {
-        const imports = JSON.parse(jsonString).imports;
+        const { imports } = JSON.parse(jsonString);
 
         if (!imports) {
             return;
