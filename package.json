@@ -50,7 +50,7 @@
     "node-sass": "^4.3.0",
     "rimraf": "^2.5.2",
     "should": "^13.1.2",
-    "theo": "^6.0.0 || ^6.0.0-beta.7",
+    "theo": "^8.0.0-beta.1",
     "webpack": "^3.7.1"
   },
   "dependencies": {
