@@ -51,7 +51,7 @@
     "rimraf": "^2.5.2",
     "should": "^13.1.2",
     "theo": "^6.0.0 || ^6.0.0-beta.7",
-    "webpack": "^3.7.1"
+    "webpack": "^4.18.0"
   },
   "dependencies": {
     "loader-utils": "^1.1.0"
