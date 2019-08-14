@@ -48,7 +48,7 @@
     "hson-loader": "^2.0.0",
     "mocha": "^4.0.1",
     "node-sass": "^4.3.0",
-    "rimraf": "^2.5.2",
+    "rimraf": "^3.0.0",
     "should": "^13.1.2",
     "theo": "^6.0.0 || ^6.0.0-beta.7",
     "webpack": "^3.7.1"
